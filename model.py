@@ -4,8 +4,8 @@ from __future__ import print_function
 from reader import read_data
 
 import os
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 
 class QAModelN2N(object):
@@ -57,11 +57,10 @@ class QAModelN2N(object):
         # TODO: add linear start
         # TODO: add batching
         for i,sent in enumerate(part_data):
-            init = tf.zeros([self.edim])
             mi = tf.foldl(lambda acc, x: tf.nn.embedding_lookup(self.A, x) + acc,
-                          sent, initializer=init)
+                          sent, initializer=tf.zeros([self.edim]))
             ci = tf.foldl(lambda acc, x: tf.nn.embedding_lookup(self.C, x) + acc,
-                          sent, initializer=init)
+                          sent, initializer=tf.zeros([self.edim]))
             mi += tf.slice(self.T_A, [i, 0], [1, self.edim])
             ci += tf.slice(self.T_C, [i, 0], [1, self.edim])
             self.ms.append(mi)

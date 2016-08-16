@@ -38,17 +38,13 @@ def preprocess_data(fname):
     return count, vocab, high_idx
 
 
-def read_data(fname, vocab, batch_size=1):
+def read_data(fname, vocab):
     if os.path.isfile(fname):
         with open(fname) as f:
             lines = f.readlines()
     else:
         raise Exception("[!] Data file {} not found".format(fname))
 
-    batch_x = []
-    batch_q = []
-    batch_a = []
-    cur_batch_size = 0
     for line in lines:
         question = False
         idx = int(line.split()[0])
@@ -74,10 +70,4 @@ def read_data(fname, vocab, batch_size=1):
                 x.append(vocab[word])
 
         if question:
-            batch_x.append(x)
-            batch_q.append(q)
-            batch_a.append(a)
-            cur_batch_size += 1
-            if cur_batch_size == batch_size:
-                yield (batch_x, batch_q, batch_a)
-                cur_batch_size = 0
+            yield (x, q, a)
